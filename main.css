@@ -62,3 +62,6 @@ ul li:hover, .focused {
   color: #333;
   text-decoration: none;
 }
+#intro h1 {
+  color: #333;
+}
