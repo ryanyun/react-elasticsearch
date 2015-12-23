@@ -11,7 +11,7 @@ body {
 input[type="text"] {
   margin: 0 auto;
   text-align: center;
-  width: 430px;
+  width: 850px;
   display: block;
   padding: 20px;
   font-size: 1.2em;
@@ -24,10 +24,11 @@ ul{
   list-style: none;
   display: inline-block;
   margin-top: 10px;
-  width: 480px;
+  width: 900px;
   text-align: left;
 }
 ul li {
+  overflow: scroll;
   display: block;
   position: relative;
   margin: 2px auto;
@@ -45,7 +46,7 @@ ul li {
 }
 ul li a {
   position: absolute;
-  left: 120px;
+  left: 500px;
   color: #999;
 }
 ul li:hover, .focused {
@@ -64,4 +65,8 @@ ul li:hover, .focused {
 }
 #intro h1 {
   color: #333;
+}
+#notice {
+  color: #FF6666;
+  margin-bottom: 10px;
 }

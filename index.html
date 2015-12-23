@@ -2,23 +2,25 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Search Demo</title>
+    <title>Real-Time Search Demo</title>
     <script src="js/react.min.js"></script>
     <script src="js/react-dom-server.min.js"></script>
     <script src="js/react-dom.min.js"></script>
     <script src="js/react-with-addons.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="main.css">
   </head>
   <body>
+    <p id="notice"><em>Update: The <i class="fa fa-spotify"></i> Spotify Charts API seems to be discontinued and as a result, the list includes the most streamed tracks as of March 23, 2015</em></p>
     <div id="intro">
       <h1>Real-Time Search Demo</h1>
-      <p>This is a short demo of the real-time search capabilites of <a href="https://facebook.github.io/react/index.html" target="_blank">React.js</a><br>Built upon <a href="http://jsfiddle.net/user/martinaglv/fiddles/" target="_blank">@martinaglv</a>'s <a href="http://jsfiddle.net/martinaglv/3N6D3/light/" target="_blank">JSFiddle</a> &middot; Made with <i class="fa fa-heart"></i> in NYC by <a href="http://ryanyun.nyc" target="_blank">Ryan Yun</a></p>
+      <p>This is a quick demo of the real-time search capabilites of <a href="https://facebook.github.io/react/index.html" target="_blank">React.js</a><br>Using <i class="fa fa-spotify"></i> Spotify's <a href="http://charts.spotify.com/docs" target="_blank">Charts API</a>, this demo lists the most globally streamed tracks for today<br>Built upon <a href="http://jsfiddle.net/user/martinaglv/fiddles/" target="_blank">@martinaglv</a>'s <a href="http://jsfiddle.net/martinaglv/3N6D3/light/" target="_blank">JSFiddle</a> &middot; Made with <i class="fa fa-heart"></i> in NYC by <a href="http://ryanyun.nyc" target="_blank">Ryan Yun</a></p>
     </div>
     <div id="react"></div>
     <script type="text/babel">
-      var SearchExample = React.createClass({
+      var Search = React.createClass({
         getInitialState: function(){
           return { searchString: '' };
         },
@@ -30,11 +32,11 @@
           var searchString = this.state.searchString.trim().toLowerCase();
           if ( searchString.length ) {
             arr = arr.filter(function( a ) {
-              return a.name.toLowerCase().match( searchString );
+              return a.track_name.toLowerCase().match( searchString );
             });
           }
           var arrList = arr.map(function( a ) {
-            return <li>{a.name} <a href={a.url} title={a.name}>{a.url}</a></li>;
+            return <li>{a.track_name} - <em>{a.artist_name}</em> <a href={a.track_url} title={a.track_name}>{a.track_url}</a></li>;
           });
           return (
             <div>
@@ -49,28 +51,17 @@
           );
         }
       });
-
-      var libraries = [
-        { name: 'Backbone.js', url: 'http://documentcloud.github.io/backbone/'},
-        { name: 'AngularJS', url: 'https://angularjs.org/'},
-        { name: 'jQuery', url: 'http://jquery.com/'},
-        { name: 'Prototype', url: 'http://www.prototypejs.org/'},
-        { name: 'React', url: 'http://facebook.github.io/react/'},
-        { name: 'Ember', url: 'http://emberjs.com/'},
-        { name: 'Knockout.js', url: 'http://knockoutjs.com/'},
-        { name: 'Dojo', url: 'http://dojotoolkit.org/'},
-        { name: 'Mootools', url: 'http://mootools.net/'},
-        { name: 'Underscore', url: 'http://documentcloud.github.io/underscore/'},
-        { name: 'Lodash', url: 'http://lodash.com/'},
-        { name: 'Moment', url: 'http://momentjs.com/'},
-        { name: 'Express', url: 'http://expressjs.com/'},
-        { name: 'Koa', url: 'http://koajs.com/'},
-      ];
-
-      React.render(
-        <SearchExample items={libraries} />,
-        document.getElementById('react')
-      );
+      
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", "http://cors.io/?u=http://charts.spotify.com/api/tracks/most_streamed/global/daily/latest", true);
+      xhr.onreadystatechange = function() {
+        var tracks = JSON.parse(xhr.responseText)['tracks'];
+        React.render(
+          <Search items={tracks} />,
+          document.getElementById('react')
+        );
+      }
+      xhr.send();
     </script>
   </body>
 </html>
